@@ -26,7 +26,7 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
               ['FILTER_OP', 'FILTER_VALUE'])
 
     t_FILTER_VALUE = r'\w+'
-    t_FILTER_OP = r'(=|<=|>=|!=|<|>)'
+    t_FILTER_OP = r'(==?|<=|>=|!=|<|>)'
 
     def t_ID(self, t):
         r'@?[a-zA-Z_][a-zA-Z0-9_@\-]*'
