@@ -80,7 +80,18 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                                               {'cow': 8, 'cat': 3}]},
                             target=[{'cow': 8, 'cat': 2},
                                     {'cow': 7, 'cat': 2}])),
-
+        ('real_life_example1', dict(
+            string="payload.metrics[?(@.name='cpu.frequency')].value",
+            data={'payload': {'metrics': [
+                {'timestamp': '2013-07-29T06:51:34.472416',
+                 'name': 'cpu.frequency',
+                 'value': 1600,
+                 'source': 'libvirt.LibvirtDriver'},
+                {'timestamp': '2013-07-29T06:51:34.472416',
+                 'name': 'cpu.user.time',
+                 'value': 17421440000000,
+                 'source': 'libvirt.LibvirtDriver'}]}},
+            target=[1600])),
     ]
 
     def test_fields_value(self):
