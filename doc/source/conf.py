@@ -37,7 +37,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'python-jsonpath-rw-ext'
+project = u'jsonpath-rw-ext'
 copyright = u''
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
