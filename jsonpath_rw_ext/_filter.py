@@ -11,9 +11,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import operator
-
 import jsonpath_rw
+import operator
+from six import moves
 
 
 OPERATOR_MAP = {
@@ -41,10 +41,10 @@ class Filter(jsonpath_rw.JSONPath):
         return [jsonpath_rw.DatumInContext(datum.value[i],
                                            path=jsonpath_rw.Index(i),
                                            context=datum)
-                for i in xrange(0, len(datum.value))
+                for i in moves.range(0, len(datum.value))
                 if (len(self.expressions) ==
-                    len(filter(lambda x: x.find(datum.value[i]),
-                               self.expressions)))]
+                    len(list(filter(lambda x: x.find(datum.value[i]),
+                                    self.expressions))))]
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.expressions)

@@ -18,6 +18,11 @@ from jsonpath_rw import parser
 from jsonpath_rw_ext import _filter
 from jsonpath_rw_ext import _iterable
 
+# NOTE(sileht): This block is very important otherwise py3X tests fail no joke
+# ply/yacc.py order functions by line, then by module, but in py3 module are
+# not sortable, so we add this block to not have methods defined at the same
+# line in jsonpath_rw and jsonpath_rw_ext, yes that really sucks ...
+
 
 class ExtendedJsonPathLexer(lexer.JsonPathLexer):
     """Custom LALR-lexer for JsonPath"""
