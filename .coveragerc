@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = jsonpath_rw_ext
+omit = jsonpath_rw_ext/openstack/*
+
+[report]
+ignore-errors = True

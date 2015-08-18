@@ -1,0 +1,96 @@
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+import jsonpath_rw
+from jsonpath_rw import lexer
+from jsonpath_rw import parser
+
+from jsonpath_rw_ext import _filter
+from jsonpath_rw_ext import _iterable
+
+
+class ExtendedJsonPathLexer(lexer.JsonPathLexer):
+    """Custom LALR-lexer for JsonPath"""
+    literals = lexer.JsonPathLexer.literals + ['?', '@']
+    tokens = (parser.JsonPathLexer.tokens +
+              ['FILTER_OP', 'FILTER_VALUE'])
+
+    t_FILTER_VALUE = r'\w+'
+    t_FILTER_OP = r'(=|<=|>=|!=|<|>)'
+
+    def t_ID(self, t):
+        r'@?[a-zA-Z_][a-zA-Z0-9_@\-]*'
+        # NOTE(sileht): This fixes the ID expression to be
+        # able to use @ for `This` like any json query
+        t.type = self.reserved_words.get(t.value, 'ID')
+        return t
+
+
+class ExtentedJsonPathParser(parser.JsonPathParser):
+    """Custom LALR-parser for JsonPath"""
+
+    tokens = ExtendedJsonPathLexer.tokens
+
+    def __init__(self, debug=False, lexer_class=None):
+        lexer_class = lexer_class or ExtendedJsonPathLexer
+        super(ExtentedJsonPathParser, self).__init__(debug, lexer_class)
+
+    def p_jsonpath_named_operator(self, p):
+        "jsonpath : NAMED_OPERATOR"
+        if p[1] == 'len':
+            p[0] = _iterable.Len()
+        elif p[1] == 'sorted':
+            p[0] = _iterable.SortedThis()
+        else:
+            super(ExtentedJsonPathParser, self).p_jsonpath_named_operator(p)
+
+    def p_expression(self, p):
+        """expression : jsonpath
+                      | jsonpath FILTER_OP FILTER_VALUE
+                      | jsonpath FILTER_OP ID
+                      | jsonpath FILTER_OP NUMBER
+        """
+        if len(p) == 2:
+            left, op, right = p[1], None, None
+        else:
+            __, left, op, right = p
+        p[0] = _filter.Expression(left, op, right)
+
+    def p_expressions_expression(self, p):
+        "expressions : expression"
+        p[0] = [p[1]]
+
+    def p_expressions_and(self, p):
+        "expressions : expressions '&' expressions"
+        # TODO(sileht): implements '|'
+        p[0] = p[1] + p[3]
+
+    def p_expressions_parens(self, p):
+        "expressions : '(' expressions ')'"
+        p[0] = p[2]
+
+    def p_filter(self, p):
+        "filter : '?' expressions "
+        p[0] = _filter.Filter(p[2])
+
+    def p_jsonpath_filter(self, p):
+        "jsonpath : jsonpath '[' filter ']'"
+        p[0] = jsonpath_rw.Child(p[1], p[3])
+
+    def p_jsonpath_this(self, p):
+        "jsonpath : '@'"
+        p[0] = jsonpath_rw.This()
+
+
+def parse(path, debug=False):
+    return ExtentedJsonPathParser(debug=debug).parse(path)
