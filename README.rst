@@ -29,12 +29,12 @@ Quick Start
 
 At the command line::
 
-    $ pip install python-jsonpath-rw-ext
+    $ pip install jsonpath-rw-ext
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv python-jsonpath-rw-ext
-    $ pip install python-jsonpath-rw-ext
+    $ mkvirtualenv jsonpath-rw-ext
+    $ pip install jsonpath-rw-ext
 
 
 Extensions
