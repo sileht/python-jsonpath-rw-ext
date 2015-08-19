@@ -20,6 +20,7 @@ Tests for `jsonpath_rw_ext` module.
 """
 
 from jsonpath_rw import jsonpath  # For setting the global auto_id_field flag
+from jsonpath_rw import lexer  # For setting the global auto_id_field flag
 from oslotest import base
 import testscenarios
 
@@ -95,10 +96,10 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                        target=[{'cat': 2, 'cow': 1},
                                {'cat': 1, 'cow': 2},
                                {'cat': 3, 'cow': 3}])),
-        ('sort2', dict(string='objects[\\cat]',
+        ('sort2', dict(string='objects[\cat]',
                        data={'objects': [{'cat': 2}, {'cat': 1}, {'cat': 3}]},
                        target=[{'cat': 3}, {'cat': 2}, {'cat': 1}])),
-        ('sort3', dict(string='objects[/cow,\\cat]',
+        ('sort3', dict(string='objects[/cow,\cat]',
                        data={'objects': [{'cat': 1, 'cow': 2},
                                          {'cat': 2, 'cow': 1},
                                          {'cat': 3, 'cow': 1},
@@ -107,6 +108,23 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                                {'cat': 2, 'cow': 1},
                                {'cat': 1, 'cow': 2},
                                {'cat': 3, 'cow': 3}])),
+        ('sort4', dict(string='objects[/cat.cow]',
+                       data={'objects': [{'cat': {'dog': 1, 'cow': 2}},
+                                         {'cat': {'dog': 2, 'cow': 1}},
+                                         {'cat': {'dog': 3, 'cow': 3}}]},
+                       target=[{'cat': {'dog': 2, 'cow': 1}},
+                               {'cat': {'dog': 1, 'cow': 2}},
+                               {'cat': {'dog': 3, 'cow': 3}}])),
+        ('sort5_twofields', dict(string='objects[/cat.(cow,bow)]',
+                                 data={'objects':
+                                       [{'cat': {'dog': 1, 'bow': 3}},
+                                        {'cat': {'dog': 2, 'cow': 1}},
+                                        {'cat': {'dog': 2, 'bow': 2}},
+                                        {'cat': {'dog': 3, 'cow': 2}}]},
+                                 target=[{'cat': {'dog': 2, 'cow': 1}},
+                                         {'cat': {'dog': 2, 'bow': 2}},
+                                         {'cat': {'dog': 3, 'cow': 2}},
+                                         {'cat': {'dog': 1, 'bow': 3}}])),
 
         ('real_life_example1', dict(
             string="payload.metrics[?(@.name='cpu.frequency')].value",

@@ -32,7 +32,11 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
 
     t_FILTER_VALUE = r'\w+'
     t_FILTER_OP = r'(==?|<=|>=|!=|<|>)'
-    t_SORT_DIRECTION = r'(/|\\)'
+
+    def t_SORT_DIRECTION(self, t):
+        r',?\s*(/|\\)'
+        t.value = t.value[-1]
+        return t
 
     def t_ID(self, t):
         r'@?[a-zA-Z_][a-zA-Z0-9_@\-]*'
@@ -94,17 +98,16 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
         p[0] = jsonpath_rw.Child(p[1], p[3])
 
     def p_sort(self, p):
-        "sort : SORT_DIRECTION ID"
-        field = jsonpath_rw.Fields(p[2])
-        p[0] = (field, p[1] != '/')
+        "sort : SORT_DIRECTION jsonpath"
+        p[0] = (p[2], p[1] != "/")
 
     def p_sorts_sort(self, p):
         "sorts : sort"
         p[0] = [p[1]]
 
     def p_sorts_comma(self, p):
-        "sorts : sorts ',' sorts"
-        p[0] = p[1] + p[3]
+        "sorts : sorts sorts"
+        p[0] = p[1] + p[2]
 
     def p_jsonpath_sort(self, p):
         "jsonpath : jsonpath '[' sorts ']'"
@@ -114,6 +117,9 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
     def p_jsonpath_this(self, p):
         "jsonpath : '@'"
         p[0] = jsonpath_rw.This()
+
+    precedence = ([
+    ] + parser.JsonPathParser.precedence)
 
 
 def parse(path, debug=False):
