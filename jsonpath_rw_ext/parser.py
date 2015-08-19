@@ -118,9 +118,6 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
         "jsonpath : '@'"
         p[0] = jsonpath_rw.This()
 
-    precedence = ([
-    ] + parser.JsonPathParser.precedence)
-
 
 def parse(path, debug=False):
     return ExtentedJsonPathParser(debug=debug).parse(path)
