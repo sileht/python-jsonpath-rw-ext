@@ -46,14 +46,12 @@ Extensions
 | len          | - $.objects.`len`                            |
 +--------------+----------------------------------------------+
 | sorted       | - $.objects.`sorted`                         |
-|              | - $.objects[\some_field]                     |
-|              | - $.objects[\some_field,/other_field]        |
+|              | - $.objects[\\some_field]                    |
+|              | - $.objects[\\some_field,/other_field]       |
 +--------------+----------------------------------------------+
 | filter       | - $.objects[?(@some_field > 5)]              |
 |              | - $.objects[?some_field = "foobar")]         |
 |              | - $.objects[?some_field > 5 & other < 2)]    |
-|              | - $.objects[?(@some_field > 5)]              |
-|              | - $.objects[?(@some_field > 5)]              |
 +--------------+----------------------------------------------+
 
 
