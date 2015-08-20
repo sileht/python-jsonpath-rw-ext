@@ -22,6 +22,8 @@ from jsonpath_rw_ext import _iterable
 # ply/yacc.py order functions by line, then by module, but in py3 module are
 # not sortable, so we add this block to not have methods defined at the same
 # line in jsonpath_rw and jsonpath_rw_ext, yes that really sucks ...
+# (Need some other lines)
+# (Need some other lines)
 
 
 class ExtendedJsonPathLexer(lexer.JsonPathLexer):
