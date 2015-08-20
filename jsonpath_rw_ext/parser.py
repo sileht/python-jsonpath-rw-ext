@@ -28,9 +28,8 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
     """Custom LALR-lexer for JsonPath"""
     literals = lexer.JsonPathLexer.literals + ['?', '@']
     tokens = (parser.JsonPathLexer.tokens +
-              ['FILTER_OP', 'FILTER_VALUE', 'SORT_DIRECTION'])
+              ['FILTER_OP', 'SORT_DIRECTION'])
 
-    t_FILTER_VALUE = r'\w+'
     t_FILTER_OP = r'(==?|<=|>=|!=|<|>)'
 
     def t_SORT_DIRECTION(self, t):
@@ -66,7 +65,6 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
 
     def p_expression(self, p):
         """expression : jsonpath
-                      | jsonpath FILTER_OP FILTER_VALUE
                       | jsonpath FILTER_OP ID
                       | jsonpath FILTER_OP NUMBER
         """
