@@ -7,6 +7,7 @@ git tag -s $version -m "Release version ${version}"
 git checkout $version
 git clean -fd
 rm -rf jsonpath_rw_ext.egg-info build dist
+tox -epep8,py27,py34
 tox -r -evenv python setup.py sdist bdist_wheel
 
 echo "release: jsonpath-rw-ext ${version}"
