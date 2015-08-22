@@ -20,7 +20,6 @@ Tests for `jsonpath_rw_ext` module.
 """
 
 from jsonpath_rw import jsonpath  # For setting the global auto_id_field flag
-from jsonpath_rw import lexer  # For setting the global auto_id_field flag
 from oslotest import base
 from six import moves
 import testscenarios
@@ -132,8 +131,65 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                                          {'cat': {'dog': 3, 'cow': 2}},
                                          {'cat': {'dog': 1, 'bow': 3}}])),
 
+        ('arithmetic_number_only', dict(string='3 * 3', data={},
+                                        target=[9])),
+
+        ('arithmetic_mul1', dict(string='$.foo * 10', data={'foo': 4},
+                                 target=[40])),
+        ('arithmetic_mul2', dict(string='10 * $.foo', data={'foo': 4},
+                                 target=[40])),
+        ('arithmetic_mul3', dict(string='$.foo * 10', data={'foo': 4},
+                                 target=[40])),
+        ('arithmetic_mul4', dict(string='$.foo * 3', data={'foo': 'f'},
+                                 target=['fff'])),
+        ('arithmetic_mul5', dict(string='foo * 3', data={'foo': 'f'},
+                                 target=['foofoofoo'])),
+        ('arithmetic_mul6', dict(string='($.foo * 10 * $.foo) + 2',
+                                 data={'foo': 4}, target=[162])),
+        ('arithmetic_mul7', dict(string='$.foo * 10 * $.foo + 2',
+                                 data={'foo': 4}, target=[240])),
+
+        ('arithmetic_str0', dict(string='foo + bar',
+                                 data={'foo': 'name', "bar": "node"},
+                                 target=["foobar"])),
+        ('arithmetic_str1', dict(string='foo + "_" + bar',
+                                 data={'foo': 'name', "bar": "node"},
+                                 target=["foo_bar"])),
+        ('arithmetic_str2', dict(string='$.foo + "_" + $.bar',
+                                 data={'foo': 'name', "bar": "node"},
+                                 target=["name_node"])),
+        ('arithmetic_str3', dict(string='$.foo + $.bar',
+                                 data={'foo': 'name', "bar": "node"},
+                                 target=["namenode"])),
+        ('arithmetic_str4', dict(string='foo.cow + bar.cow',
+                                 data={'foo': {'cow': 'name'},
+                                       "bar": {'cow': "node"}},
+                                 target=["namenode"])),
+
+        ('arithmetic_list1', dict(string='$.objects[*].cow * 2',
+                                  data={'objects': [{'cow': 1},
+                                                    {'cow': 2},
+                                                    {'cow': 3}]},
+                                  target=[2, 4, 6])),
+
+        ('arithmetic_list2', dict(string='$.objects[*].cow * $.objects[*].cow',
+                                  data={'objects': [{'cow': 1},
+                                                    {'cow': 2},
+                                                    {'cow': 3}]},
+                                  target=[1, 4, 9])),
+
+        ('arithmetic_list_err1', dict(
+            string='$.objects[*].cow * $.objects2[*].cow',
+            data={'objects': [{'cow': 1}, {'cow': 2}, {'cow': 3}],
+                  'objects2': [{'cow': 5}]},
+            target=[])),
+
+        ('arithmetic_err1', dict(string='$.objects * "foo"',
+                                 data={'objects': []}, target=[])),
+        ('arithmetic_err2', dict(string='"bar" * "foo"', data={}, target=[])),
+
         ('real_life_example1', dict(
-            string="payload.metrics[?(@.name='cpu.frequency')].value",
+            string="payload.metrics[?(@.name='cpu.frequency')].value * 100",
             data={'payload': {'metrics': [
                 {'timestamp': '2013-07-29T06:51:34.472416',
                  'name': 'cpu.frequency',
@@ -143,7 +199,7 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                  'name': 'cpu.user.time',
                  'value': 17421440000000,
                  'source': 'libvirt.LibvirtDriver'}]}},
-            target=[1600])),
+            target=[160000])),
     ]
 
     def test_fields_value(self):
@@ -249,12 +305,18 @@ class TestJsonPath(base.BaseTestCase):
                            {'foo': {'baz': {'bizzle': 5}}}, [5])])
 
     def test_hyphen_key(self):
-        self.check_cases([('foo.bar-baz', {'foo': {'bar-baz': 3}}, [3]),
-                          ('foo.[bar-baz,blah-blah]',
+        # NOTE(sileht): hyphen is now a operator
+        # so to use it has key we must escape it with quote
+        #self.check_cases([('foo.bar-baz', {'foo': {'bar-baz': 3}}, [3]),
+        #                  ('foo.[bar-baz,blah-blah]',
+        #                   {'foo': {'bar-baz': 3, 'blah-blah': 5}},
+        #                   [3, 5])])
+        self.check_cases([('foo."bar-baz"', {'foo': {'bar-baz': 3}}, [3]),
+                          ('foo.["bar-baz","blah-blah"]',
                            {'foo': {'bar-baz': 3, 'blah-blah': 5}},
                            [3, 5])])
-        self.assertRaises(lexer.JsonPathLexerError, self.check_cases,
-                          [('foo.-baz', {'foo': {'-baz': 8}}, [8])])
+        #self.assertRaises(lexer.JsonPathLexerError, self.check_cases,
+        #                  [('foo.-baz', {'foo': {'-baz': 8}}, [8])])
 
     #
     # Check that the paths for the data are correct.

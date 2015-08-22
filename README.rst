@@ -53,5 +53,44 @@ Extensions
 |              | - $.objects[?some_field = "foobar")]         |
 |              | - $.objects[?some_field > 5 & other < 2)]    |
 +--------------+----------------------------------------------+
+| arithmetic   | - $.foo + "_" + $.bar                        |
+| (-+*/)       | - $.foo * 12                                 |
+|              | - $.objects[*].cow + $.objects[*].cat      |
++--------------+----------------------------------------------+
 
+About arithmetic and string
+---------------------------
+
+Operations are done with python operators and allows types that python
+allows, and return None if the operation can be done due to imcompatible types.
+
+When operators are used, a jsonpath must be be fully defined otherwise
+if jsonpath-rw-ext can't known if expression is a string or a jsonpath field,
+it will choice string.
+
+Example with data::
+
+    {
+        'cow': 'foo',
+        'fish': 'bar'
+    }
+
+| **cow + fish** returns **cowfish**
+| **$.cow + $.fish** returns **foobar**
+| **$.cow + "_" + $.fish** returns **foo_bar**
+| **$.cow + "_" + fish** returns **foo_fish**
+
+About arithmetic and list
+-------------------------
+
+Arithmetic can be used against two list if they have the same size.
+
+Example with data::
+
+    {'objects': [
+        {'cow': 2, 'cat': 3},
+        {'cow': 4, 'cat': 6}
+    ]}
+
+| **$.objects[\*].cow + $.objects[\*].cat** returns **[6, 9]**
 

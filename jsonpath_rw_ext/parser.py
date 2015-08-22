@@ -15,6 +15,7 @@ import jsonpath_rw
 from jsonpath_rw import lexer
 from jsonpath_rw import parser
 
+from jsonpath_rw_ext import _arithmetic
 from jsonpath_rw_ext import _filter
 from jsonpath_rw_ext import _iterable
 
@@ -28,11 +29,11 @@ from jsonpath_rw_ext import _iterable
 
 class ExtendedJsonPathLexer(lexer.JsonPathLexer):
     """Custom LALR-lexer for JsonPath"""
-    literals = lexer.JsonPathLexer.literals + ['?', '@']
+    literals = lexer.JsonPathLexer.literals + ['?', '@', '+', '*', '/', '-']
     tokens = (parser.JsonPathLexer.tokens +
               ['FILTER_OP', 'SORT_DIRECTION'])
 
-    t_FILTER_OP = r'(==?|<=|>=|!=|<|>)'
+    t_FILTER_OP = r'==?|<=|>=|!=|<|>'
 
     def t_SORT_DIRECTION(self, t):
         r',?\s*(/|\\)'
@@ -55,6 +56,32 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
     def __init__(self, debug=False, lexer_class=None):
         lexer_class = lexer_class or ExtendedJsonPathLexer
         super(ExtentedJsonPathParser, self).__init__(debug, lexer_class)
+
+    def p_jsonpath_operator_jsonpath(self, p):
+        """jsonpath : NUMBER operator NUMBER
+                    | ID operator ID
+                    | NUMBER operator jsonpath
+                    | jsonpath operator NUMBER
+                    | jsonpath operator jsonpath
+        """
+
+        # NOTE(sileht): If we have choice between a field or a string we
+        # always choice string, because field can be full qualified
+        # like $.foo == foo and where string can't.
+        for i in [1, 3]:
+            if (isinstance(p[i], jsonpath_rw.Fields)
+                    and len(p[i].fields) == 1):
+                p[i] = p[i].fields[0]
+
+        p[0] = _arithmetic.Operation(p[1], p[2], p[3])
+
+    def p_operator(self, p):
+        """operator : '+'
+                    | '-'
+                    | '*'
+                    | '/'
+        """
+        p[0] = p[1]
 
     def p_jsonpath_named_operator(self, p):
         "jsonpath : NAMED_OPERATOR"
@@ -117,6 +144,13 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
     def p_jsonpath_this(self, p):
         "jsonpath : '@'"
         p[0] = jsonpath_rw.This()
+
+    precedence = [
+        ('left', '+', '-'),
+        ('left', '*', '/'),
+    ] + jsonpath_rw.parser.JsonPathParser.precedence + [
+        ('nonassoc', 'ID'),
+    ]
 
 
 def parse(path, debug=False):
