@@ -15,9 +15,8 @@ python-jsonpath-rw-ext
 
 Extensions for JSONPath RW
 
-This extensions will be proposed `upstream <https://github.com/kennknowles/python-jsonpath-rw>`__
+Each extensions will be proposed `upstream <https://github.com/kennknowles/python-jsonpath-rw>`__
 and will stay here only if they are refused.
-
 
 * Free software: Apache license
 * Documentation: https://python-jsonpath-rw-ext.readthedocs.org/en/latest/
@@ -36,6 +35,21 @@ Or, if you have virtualenvwrapper installed::
     $ mkvirtualenv jsonpath-rw-ext
     $ pip install jsonpath-rw-ext
 
+
+To replace the jsonpath_rw parser by this one with::
+
+    import jsonpath_rw_ext
+    jsonpath_rw_ext.parse("$.foo").find(...)
+
+Or::
+
+    from jsonpath_rw_ext import parser
+    parser.ExtentedJsonPathParser().parse("$.foo").find(...)
+
+
+The jsonpath classes are not part of the public API, because the name/structure 
+can change when they will be implemented upstream. Only the syntax *shouldn't* 
+change.
 
 Extensions
 ----------
@@ -62,11 +76,11 @@ About arithmetic and string
 ---------------------------
 
 Operations are done with python operators and allows types that python
-allows, and return None if the operation can be done due to imcompatible types.
+allows, and return [] if the operation can be done due to incompatible types.
 
 When operators are used, a jsonpath must be be fully defined otherwise
-if jsonpath-rw-ext can't known if expression is a string or a jsonpath field,
-it will choice string.
+jsonpath-rw-ext can't known if the expression is a string or a jsonpath field,
+in this case it will choice string as type.
 
 Example with data::
 
@@ -83,7 +97,7 @@ Example with data::
 About arithmetic and list
 -------------------------
 
-Arithmetic can be used against two list if they have the same size.
+Arithmetic can be used against two lists if they have the same size.
 
 Example with data::
 
