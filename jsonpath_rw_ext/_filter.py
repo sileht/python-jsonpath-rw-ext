@@ -35,7 +35,7 @@ class Filter(jsonpath_rw.JSONPath):
 
     def find(self, datum):
         if not self.expressions:
-            return []
+            return datum
 
         datum = jsonpath_rw.DatumInContext.wrap(datum)
         return [jsonpath_rw.DatumInContext(datum.value[i],
