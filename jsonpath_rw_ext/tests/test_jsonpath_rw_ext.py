@@ -307,7 +307,7 @@ class TestJsonPath(base.BaseTestCase):
     def test_hyphen_key(self):
         # NOTE(sileht): hyphen is now a operator
         # so to use it has key we must escape it with quote
-        #self.check_cases([('foo.bar-baz', {'foo': {'bar-baz': 3}}, [3]),
+        # self.check_cases([('foo.bar-baz', {'foo': {'bar-baz': 3}}, [3]),
         #                  ('foo.[bar-baz,blah-blah]',
         #                   {'foo': {'bar-baz': 3, 'blah-blah': 5}},
         #                   [3, 5])])
@@ -315,7 +315,7 @@ class TestJsonPath(base.BaseTestCase):
                           ('foo.["bar-baz","blah-blah"]',
                            {'foo': {'bar-baz': 3, 'blah-blah': 5}},
                            [3, 5])])
-        #self.assertRaises(lexer.JsonPathLexerError, self.check_cases,
+        # self.assertRaises(lexer.JsonPathLexerError, self.check_cases,
         #                  [('foo.-baz', {'foo': {'-baz': 8}}, [8])])
 
     #
