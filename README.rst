@@ -55,7 +55,7 @@ Extensions
 +--------------+----------------------------------------------+
 | arithmetic   | - $.foo + "_" + $.bar                        |
 | (-+*/)       | - $.foo * 12                                 |
-|              | - $.objects[*].cow + $.objects[*].cat      |
+|              | - $.objects[*].cow + $.objects[*].cat        |
 +--------------+----------------------------------------------+
 
 About arithmetic and string
