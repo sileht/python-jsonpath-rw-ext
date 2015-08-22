@@ -24,7 +24,6 @@ from jsonpath_rw_ext import _iterable
 # not sortable, so we add this block to not have methods defined at the same
 # line in jsonpath_rw and jsonpath_rw_ext, yes that really sucks ...
 # (Need some other lines)
-# (Need some other lines)
 
 
 class ExtendedJsonPathLexer(lexer.JsonPathLexer):
