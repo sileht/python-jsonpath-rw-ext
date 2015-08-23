@@ -200,6 +200,22 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                  'value': 17421440000000,
                  'source': 'libvirt.LibvirtDriver'}]}},
             target=[160000])),
+
+        ('real_life_example2', dict(
+            string="payload.(id|(resource.id))",
+            data={'payload': {'id': 'foobar'}},
+            target=['foobar'])),
+        ('real_life_example3', dict(
+            string="payload.id|(resource.id)",
+            data={'payload': {'resource':
+                              {'id': 'foobar'}}},
+            target=['foobar'])),
+        ('real_life_example4', dict(
+            string="payload.id|(resource.id)",
+            data={'payload': {'id': 'yes',
+                              'resource': {'id': 'foobar'}}},
+            target=['yes', 'foobar'])),
+
     ]
 
     def test_fields_value(self):
