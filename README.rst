@@ -15,6 +15,11 @@ python-jsonpath-rw-ext
 
 Extensions for JSONPath RW
 
+jsonpath-rw-ext extends json-path-rw capabilities by adding multiple extensions.
+'len' that allows to get the length of a list. 'sorted' that returns a sorted version
+of a list, 'arithmetic' that permits to make math operation between elements and 
+'filter' to select only certain elements of a list.
+
 Each extensions will be proposed `upstream <https://github.com/kennknowles/python-jsonpath-rw>`__
 and will stay here only if they are refused.
 
