@@ -18,11 +18,14 @@ from jsonpath_rw import parser
 from jsonpath_rw_ext import _arithmetic
 from jsonpath_rw_ext import _filter
 from jsonpath_rw_ext import _iterable
+from jsonpath_rw_ext import _string
 
 # NOTE(sileht): This block is very important otherwise py3X tests fail no joke
 # ply/yacc.py order functions by line, then by module, but in py3 module are
 # not sortable, so we add this block to not have methods defined at the same
 # line in jsonpath_rw and jsonpath_rw_ext, yes that really sucks ...
+# (Need some other lines)
+# (Need some other lines)
 # (Need some other lines)
 
 
@@ -88,6 +91,10 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
             p[0] = _iterable.Len()
         elif p[1] == 'sorted':
             p[0] = _iterable.SortedThis()
+        elif p[1].startswith("split("):
+            p[0] = _string.Split(p[1])
+        elif p[1].startswith("sub("):
+            p[0] = _string.Sub(p[1])
         else:
             super(ExtentedJsonPathParser, self).p_jsonpath_named_operator(p)
 

@@ -216,6 +216,28 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                               'resource': {'id': 'foobar'}}},
             target=['yes', 'foobar'])),
 
+        ('sub1', dict(
+            string="payload.`sub(/(foo\\\\d+)\\\\+(\\\\d+bar)/, \\\\2-\\\\1)`",
+            data={'payload': "foo5+3bar"},
+            target=["3bar-foo5"]
+        )),
+        ('sub2', dict(
+            string='payload.`sub(/foo\\\\+bar/, repl)`',
+            data={'payload': "foo+bar"},
+            target=["repl"]
+        )),
+
+        ('split1', dict(
+            string='payload.`split(-, 2, -1)`',
+            data={'payload': "foo-bar-cat-bow"},
+            target=["cat"]
+        )),
+        ('split2', dict(
+            string='payload.`split(-, 2, 2)`',
+            data={'payload': "foo-bar-cat-bow"},
+            target=["cat-bow"]
+        )),
+
     ]
 
     def test_fields_value(self):
