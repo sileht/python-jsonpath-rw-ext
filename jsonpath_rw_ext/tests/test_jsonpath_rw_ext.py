@@ -238,6 +238,17 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
             target=["cat-bow"]
         )),
 
+        ('bug-#2-correct', dict(
+            string='foo[?(@.baz==1)]',
+            data={'foo': [{'baz': 1}, {'baz': 2}]},
+            target=[{'baz': 1}],
+        )),
+
+        ('bug-#2-wrong', dict(
+            string='foo[*][?(@.baz==1)]',
+            data={'foo': [{'baz': 1}, {'baz': 2}]},
+            target=[],
+        )),
     ]
 
     def test_fields_value(self):

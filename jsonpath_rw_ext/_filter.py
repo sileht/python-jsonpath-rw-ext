@@ -38,6 +38,9 @@ class Filter(jsonpath_rw.JSONPath):
             return datum
 
         datum = jsonpath_rw.DatumInContext.wrap(datum)
+        if not isinstance(datum.value, list):
+            return []
+
         return [jsonpath_rw.DatumInContext(datum.value[i],
                                            path=jsonpath_rw.Index(i),
                                            context=datum)
