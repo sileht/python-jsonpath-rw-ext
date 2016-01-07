@@ -33,7 +33,7 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
     """Custom LALR-lexer for JsonPath"""
     literals = lexer.JsonPathLexer.literals + ['?', '@', '+', '*', '/', '-']
     tokens = (parser.JsonPathLexer.tokens +
-              ['FILTER_OP', 'SORT_DIRECTION'])
+              ['FILTER_OP', 'SORT_DIRECTION', 'FLOAT'])
 
     t_FILTER_OP = r'==?|<=|>=|!=|<|>'
 
@@ -49,6 +49,10 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
         t.type = self.reserved_words.get(t.value, 'ID')
         return t
 
+    def t_FLOAT(self, t):
+        r'-?\d+\.\d+'
+        t.value = float(t.value)
+        return t
 
 class ExtentedJsonPathParser(parser.JsonPathParser):
     """Custom LALR-parser for JsonPath"""
@@ -61,9 +65,12 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
 
     def p_jsonpath_operator_jsonpath(self, p):
         """jsonpath : NUMBER operator NUMBER
+                    | FLOAT operator FLOAT
                     | ID operator ID
                     | NUMBER operator jsonpath
+                    | FLOAT operator jsonpath
                     | jsonpath operator NUMBER
+                    | jsonpath operator FLOAT
                     | jsonpath operator jsonpath
         """
 
@@ -101,6 +108,7 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
     def p_expression(self, p):
         """expression : jsonpath
                       | jsonpath FILTER_OP ID
+                      | jsonpath FILTER_OP FLOAT
                       | jsonpath FILTER_OP NUMBER
         """
         if len(p) == 2:
