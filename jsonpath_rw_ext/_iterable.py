@@ -51,8 +51,8 @@ class SortedThis(jsonpath_rw.This):
         if isinstance(datum.value, dict) or isinstance(datum.value, list):
             key = (functools.cmp_to_key(self._compare)
                    if self.expressions else None)
-            return [jsonpath_rw.DatumInContext.wrap(value)
-                    for value in sorted(datum.value, key=key)]
+            return [jsonpath_rw.DatumInContext.wrap(
+                [value for value in sorted(datum.value, key=key)])]
         return datum
 
     def __eq__(self, other):
