@@ -93,7 +93,18 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
                                               {'cow': 8, 'cat': 3}]},
                             target=[{'cow': 8, 'cat': 2},
                                     {'cow': 7, 'cat': 2}])),
-
+        ('filter_float_gt', dict(
+            string='objects[?confidence>=0.5].prediction',
+            data={
+                'objects': [
+                    {'confidence': 0.42,
+                     'prediction': 'Good'},
+                    {'confidence': 0.58,
+                     'prediction': 'Bad'},
+                ]
+            },
+            target=['Bad']
+        )),
         ('sort1', dict(string='objects[/cow]',
                        data={'objects': [{'cat': 1, 'cow': 2},
                                          {'cat': 2, 'cow': 1},
