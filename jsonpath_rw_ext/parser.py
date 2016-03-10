@@ -54,6 +54,7 @@ class ExtendedJsonPathLexer(lexer.JsonPathLexer):
         t.value = float(t.value)
         return t
 
+
 class ExtentedJsonPathParser(parser.JsonPathParser):
     """Custom LALR-parser for JsonPath"""
 
