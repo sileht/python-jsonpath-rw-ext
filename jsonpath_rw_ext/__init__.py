@@ -17,4 +17,4 @@ import pbr.version
 __version__ = pbr.version.VersionInfo(
     'jsonpath_rw_ext').version_string()
 
-from .parser import parse  # noqa
+from .parser import parse, match, match1  # noqa

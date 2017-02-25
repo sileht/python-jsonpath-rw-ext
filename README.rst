@@ -52,7 +52,16 @@ Or::
     parser.ExtentedJsonPathParser().parse("$.foo").find(...)
 
 
-The jsonpath classes are not part of the public API, because the name/structure 
+Shortcut functions for getting only the matched values::
+
+    import jsonpath_rw_ext as jp
+    print jp.match('$.cow[*]', {'cow': ['foo', 'bar'], 'fish': 'foobar'})
+    # prints ['foo', 'bar']
+
+    print jp.match1('$.cow[*]', {'cow': ['foo', 'bar'], 'fish': 'foobar'})
+    # prints 'foo'
+
+The jsonpath classes are not part of the public API, because the name/structure
 can change when they will be implemented upstream. Only the syntax *shouldn't* 
 change.
 
