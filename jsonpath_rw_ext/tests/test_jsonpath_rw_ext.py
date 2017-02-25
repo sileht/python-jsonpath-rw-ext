@@ -302,25 +302,30 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
 
         ('boolean-filter-true', dict(
             string='foo[?flag = true].color',
-            data={'foo': [{"color": "blue", "flag": True}, {"color": "green", "flag": False}]},
+            data={'foo': [{"color": "blue", "flag": True},
+                          {"color": "green", "flag": False}]},
             target=['blue']
         )),
 
         ('boolean-filter-false', dict(
             string='foo[?flag = false].color',
-            data={'foo': [{"color": "blue", "flag": True}, {"color": "green", "flag": False}]},
+            data={'foo': [{"color": "blue", "flag": True},
+                          {"color": "green", "flag": False}]},
             target=['green']
         )),
 
         ('boolean-filter-other-datatypes-involved', dict(
             string='foo[?flag = true].color',
-            data={'foo': [{"color": "blue", "flag": True}, {"color": "green", "flag": 2}, {"color": "red", "flag": "hi"}]},
+            data={'foo': [{"color": "blue", "flag": True},
+                          {"color": "green", "flag": 2},
+                          {"color": "red", "flag": "hi"}]},
             target=['blue']
         )),
 
         ('boolean-filter-string-true-string-literal', dict(
             string='foo[?flag = "true"].color',
-            data={'foo': [{"color": "blue", "flag": True}, {"color": "green", "flag": "true"}]},
+            data={'foo': [{"color": "blue", "flag": True},
+                          {"color": "green", "flag": "true"}]},
             target=['green']
         )),
     ]
