@@ -32,10 +32,16 @@ from jsonpath_rw_ext import _string
 class ExtendedJsonPathLexer(lexer.JsonPathLexer):
     """Custom LALR-lexer for JsonPath"""
     literals = lexer.JsonPathLexer.literals + ['?', '@', '+', '*', '/', '-']
-    tokens = (parser.JsonPathLexer.tokens +
+    tokens = (['BOOL'] +
+              parser.JsonPathLexer.tokens +
               ['FILTER_OP', 'SORT_DIRECTION', 'FLOAT'])
 
     t_FILTER_OP = r'==?|<=|>=|!=|<|>'
+
+    def t_BOOL(self, t):
+        r'true|false'
+        t.value = True if t.value == 'true' else False
+        return t
 
     def t_SORT_DIRECTION(self, t):
         r',?\s*(/|\\)'
@@ -111,6 +117,7 @@ class ExtentedJsonPathParser(parser.JsonPathParser):
                       | jsonpath FILTER_OP ID
                       | jsonpath FILTER_OP FLOAT
                       | jsonpath FILTER_OP NUMBER
+                      | jsonpath FILTER_OP BOOL
         """
         if len(p) == 2:
             left, op, right = p[1], None, None

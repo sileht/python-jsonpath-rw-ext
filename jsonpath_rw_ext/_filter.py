@@ -80,6 +80,11 @@ class Expression(jsonpath_rw.JSONPath):
                     value = int(value)
                 except ValueError:
                     continue
+            elif isinstance(self.value, bool):
+                try:
+                    value = bool(value)
+                except ValueError:
+                    continue
 
             if OPERATOR_MAP[self.op](value, self.value):
                 found.append(data)
