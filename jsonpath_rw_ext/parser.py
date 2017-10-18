@@ -172,12 +172,12 @@ def parse(path, debug=False):
     return ExtentedJsonPathParser(debug=debug).parse(path)
 
 
-def match(pattern, data, **kwargs):
+def match(pattern, data, **parse_kwargs):
     """Returns all matched values of pattern in data"""
-    return [m.value for m in parse(pattern, kwargs).find(data)]
+    return [m.value for m in parse(pattern, **parse_kwargs).find(data)]
 
 
-def match1(pattern, data, **kwargs):
+def match1(pattern, data, **parse_kwargs):
     """Returns first matched value of pattern in data or None if no matches"""
-    matches = match(pattern, data, kwargs)
+    matches = match(pattern, data, **parse_kwargs)
     return matches[0] if matches else None

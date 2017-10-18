@@ -303,15 +303,28 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
 
     def test_fields_value(self):
         jsonpath.auto_id_field = None
-        result_values = parser.match(self.string, self.data, debug=True)
+        result = parser.parse(self.string, debug=True).find(self.data)
         if isinstance(self.target, list):
-            self.assertEqual(self.target, result_values)
+            self.assertEqual(self.target, [r.value for r in result])
         elif isinstance(self.target, set):
-            self.assertEqual(self.target, set(result_values))
+            self.assertEqual(self.target, set([r.value for r in result]))
         elif isinstance(self.target, (int, float)):
-            self.assertEqual(self.target, result_values[0])
+            self.assertEqual(self.target, result[0].value)
         else:
-            self.assertEqual(self.target, result_values[0])
+            self.assertEqual(self.target, result[0].value)
+
+    def test_shortcut_functions(self):
+        jsonpath.auto_id_field = None
+        parse_result = parser.parse(self.string, debug=True).find(self.data)
+        match_result = parser.match(self.string, self.data, debug=True)
+        match1_result = parser.match1(self.string, self.data, debug=True)
+
+        self.assertEqual(match_result, [r.value for r in parse_result])
+        if match_result:
+            self.assertEqual(match_result[0], match1_result)
+        else:
+            self.assertIsNone(match1_result)
+
 
 # NOTE(sileht): copy of tests/test_jsonpath.py
 # to ensure we didn't break jsonpath_rw
