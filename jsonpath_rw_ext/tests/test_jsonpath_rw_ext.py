@@ -342,6 +342,19 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
         else:
             self.assertEqual(self.target, result[0].value)
 
+    def test_shortcut_functions(self):
+        jsonpath.auto_id_field = None
+        parse_result = parser.parse(self.string, debug=True).find(self.data)
+        match_result = parser.match(self.string, self.data, debug=True)
+        match1_result = parser.match1(self.string, self.data, debug=True)
+
+        self.assertEqual(match_result, [r.value for r in parse_result])
+        if match_result:
+            self.assertEqual(match_result[0], match1_result)
+        else:
+            self.assertIsNone(match1_result)
+
+
 # NOTE(sileht): copy of tests/test_jsonpath.py
 # to ensure we didn't break jsonpath_rw
 
