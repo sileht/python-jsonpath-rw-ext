@@ -17,7 +17,7 @@ Extensions for JSONPath RW
 
 jsonpath-rw-ext extends json-path-rw capabilities by adding multiple extensions.
 'len' that allows one to get the length of a list. 'sorted' that returns a sorted version
-of a list, 'arithmetic' that permits one to make math operation between elements and 
+of a list, 'arithmetic' that permits one to make math operation between elements and
 'filter' to select only certain elements of a list.
 
 Each extensions will be proposed `upstream <https://github.com/kennknowles/python-jsonpath-rw>`__
@@ -62,7 +62,7 @@ Shortcut functions for getting only the matched values::
     # prints 'foo'
 
 The jsonpath classes are not part of the public API, because the name/structure
-can change when they will be implemented upstream. Only the syntax *shouldn't* 
+can change when they will be implemented upstream. Only the syntax *shouldn't*
 change.
 
 Extensions
@@ -84,6 +84,7 @@ Extensions
 +--------------+----------------------------------------------+
 | filter       | - $.objects[?(@some_field > 5)]              |
 |              | - $.objects[?some_field = "foobar")]         |
+|              | - $.objects[?some_field ~ "regexp")]         |
 |              | - $.objects[?some_field > 5 & other < 2)]    |
 +--------------+----------------------------------------------+
 | arithmetic   | - $.foo + "_" + $.bar                        |

@@ -13,6 +13,7 @@
 
 import jsonpath_rw
 import operator
+import re
 from six import moves
 
 
@@ -24,6 +25,7 @@ OPERATOR_MAP = {
     '<': operator.lt,
     '>=': operator.ge,
     '>': operator.gt,
+    '~': lambda s, pat: re.match(pat, s)
 }
 
 

@@ -114,6 +114,20 @@ class TestJsonpath_rw_ext(testscenarios.WithScenarios,
             },
             target=['Bad']
         )),
+        ('filter_regex', dict(
+            string='objects[?prediction ~ ".*d$"].confidence',
+            data={
+                'objects': [
+                    {'confidence': 0.42,
+                     'prediction': 'Good'},
+                    {'confidence': 0.48,
+                     'prediction': 'Average'},
+                    {'confidence': 0.58,
+                     'prediction': 'Bad'},
+                ]
+            },
+            target=[0.42, 0.58]
+        )),
         ('sort1', dict(string='objects[/cow]',
                        data={'objects': [{'cat': 1, 'cow': 2},
                                          {'cat': 2, 'cow': 1},
