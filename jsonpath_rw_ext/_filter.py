@@ -77,19 +77,20 @@ class Expression(jsonpath_rw.JSONPath):
         found = []
         for data in datum:
             value = data.value
-            if isinstance(self.value, int):
-                try:
-                    value = int(value)
-                except ValueError:
-                    continue
-            elif isinstance(self.value, bool):
-                try:
-                    value = bool(value)
-                except ValueError:
-                    continue
+            if value is not None:
+                if isinstance(self.value, int):
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        continue
+                elif isinstance(self.value, bool):
+                    try:
+                        value = bool(value)
+                    except ValueError:
+                        continue
 
-            if OPERATOR_MAP[self.op](value, self.value):
-                found.append(data)
+                if OPERATOR_MAP[self.op](value, self.value):
+                    found.append(data)
 
         return found
 
