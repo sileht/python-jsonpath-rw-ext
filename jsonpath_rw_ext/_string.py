@@ -43,10 +43,8 @@ class Sub(jsonpath_rw.This):
     def find(self, datum):
         datum = jsonpath_rw.DatumInContext.wrap(datum)
         value = self.regex.sub(self.repl, datum.value)
-        if value == datum.value:
-            return []
-        else:
-            return [jsonpath_rw.DatumInContext.wrap(value)]
+
+        return [jsonpath_rw.DatumInContext.wrap(value)]
 
     def __eq__(self, other):
         return (isinstance(other, Sub) and self.method == other.method)
